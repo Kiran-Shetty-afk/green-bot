@@ -16,14 +16,18 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Update timestamp
-        run: |
-          echo "Last updated: $(date)" > data.md
-
-      - name: Commit changes
+      - name: Update and commit randomly
         run: |
           git config --global user.name "Kiran Green Bot"
           git config --global user.email "kiranshetty2004@gmail.com"
-          git add .
-          git commit -m "Daily update"
+          
+          NUM_COMMITS=$(( ( RANDOM % 10 ) + 1 ))
+          echo "Making $NUM_COMMITS commits today"
+          
+          for i in $(seq 1 $NUM_COMMITS); do
+            echo "Last updated: $(date) - commit $i" > data.md
+            git add data.md
+            git commit -m "Daily update $i"
+          done
+          
           git push
